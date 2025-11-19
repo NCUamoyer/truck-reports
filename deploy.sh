@@ -55,7 +55,15 @@ fi
 
 # Create volume directories if they don't exist
 echo "Ensuring volume directories exist..."
-mkdir -p volumes/data volumes/uploads
+# Try to create directories, use sudo if needed for permission issues
+if ! mkdir -p volumes/data volumes/uploads 2>/dev/null; then
+    echo "Permission issue detected, using sudo to create directories..."
+    sudo mkdir -p volumes/data volumes/uploads
+    # Fix ownership so the current user can write to them
+    sudo chown -R $(whoami):$(whoami) volumes/
+fi
+# Ensure proper permissions for Docker
+chmod -R 755 volumes/ 2>/dev/null || sudo chmod -R 755 volumes/
 
 # Build and start containers
 echo "Building and starting containers..."
