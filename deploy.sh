@@ -59,9 +59,13 @@ echo "Ensuring volume directories exist..."
 if ! mkdir -p volumes/data volumes/uploads 2>/dev/null; then
     echo "Permission issue detected, using sudo to create directories..."
     sudo mkdir -p volumes/data volumes/uploads
-    # Fix ownership so the current user can write to them
-    sudo chown -R $(whoami):$(whoami) volumes/
 fi
+
+# CRITICAL: Set ownership to uid 1001 (Docker container user)
+# Docker containers run as uid 1001 (appuser), volumes must match this ownership
+echo "Setting Docker volume permissions (uid 1001 for container access)..."
+sudo chown -R 1001:1001 volumes/ 2>/dev/null || chown -R 1001:1001 volumes/
+
 # Ensure proper permissions for Docker
 chmod -R 755 volumes/ 2>/dev/null || sudo chmod -R 755 volumes/
 
