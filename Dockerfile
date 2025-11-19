@@ -42,13 +42,11 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 
-# Copy application files
+# Copy application files based on framework
+# Express/Node application
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/scripts ./scripts
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.next ./.next
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /app/data /app/uploads && \
