@@ -53,7 +53,9 @@ if [ ! -f .env ]; then
 fi
 
 # Build and start containers
+# Build and start containers
 echo "Building and starting containers..."
+export CONTAINER_NAME="$CONTAINER"
 docker compose up -d --build --remove-orphans
 
 # Run migrations if the script exists
