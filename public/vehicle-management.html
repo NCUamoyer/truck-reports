@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Management</title>
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/table.css">
+  <link rel="stylesheet" href="/css/vehicle-management.css">
+  <link rel="stylesheet" href="/css/modal.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <i data-lucide="truck" style="width: 28px; height: 28px;"></i>
+          Vehicle Management Suite
+        </div>
+        <nav class="nav">
+          <a href="/">Dashboard</a>
+          <a href="/report-form">New Report</a>
+          <a href="/reports-table">View Reports</a>
+          <a href="/vehicle-management" class="active">Vehicles</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 32px 24px;">
+    <h1 style="margin-bottom: 32px;">Fleet Management</h1>
+
+    <div class="table-container">
+      <div class="table-header">
+        <h2 class="table-title">Vehicle Fleet</h2>
+        
+        <div class="table-controls">
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon" style="width: 20px; height: 20px;"></i>
+            <input type="text" id="search-input" placeholder="Search vehicles...">
+          </div>
+
+          <div class="filter-group">
+            <select id="status-filter">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="out_of_service">Out of Service</option>
+              <option value="retired">Retired</option>
+            </select>
+
+            <select id="location-filter">
+              <option value="">All Locations</option>
+            </select>
+
+            <button id="clear-filters-btn" class="btn btn-sm btn-secondary">
+              <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+              Clear Filters
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <button id="export-csv-btn" class="btn btn-sm btn-primary">
+              <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+              Export CSV
+            </button>
+            <button id="add-vehicle-btn" class="btn btn-sm btn-success">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+              Add New Vehicle
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk Actions Bar -->
+      <div id="bulk-actions" class="bulk-actions">
+        <div class="bulk-actions-info">
+          <span id="bulk-actions-count">0</span> vehicles selected
+        </div>
+        <button id="bulk-export-btn" class="btn btn-sm btn-primary">
+          <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+          Export Selected
+        </button>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width: 40px;">
+                <input type="checkbox" id="select-all">
+              </th>
+              <th class="sortable" data-sort="vehicle_number">Vehicle #</th>
+              <th class="sortable" data-sort="make">Make/Model</th>
+              <th class="sortable" data-sort="year">Year</th>
+              <th class="sortable" data-sort="status">Status</th>
+              <th class="sortable hide-mobile" data-sort="assigned_to">Driver</th>
+              <th class="sortable hide-mobile" data-sort="current_mileage">Mileage</th>
+              <th style="width: 200px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="vehicles-tbody">
+            <!-- Table rows will be inserted here -->
+          </tbody>
+        </table>
+        
+        <!-- Mobile Card Layout -->
+        <div id="mobile-cards" class="mobile-cards">
+          <!-- Mobile cards will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="table-footer">
+        <div class="pagination-info">
+          Showing <span id="showing-start">0</span> to <span id="showing-end">0</span> of <span id="total-vehicles">0</span> vehicles
+        </div>
+        
+        <div class="page-size-selector">
+          <label for="page-size">Show:</label>
+          <select id="page-size">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="200">200</option>
+          </select>
+        </div>
+
+        <div class="pagination" id="pagination">
+          <!-- Pagination buttons will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Vehicle Detail Modal (will be dynamically created) -->
+  <div id="vehicle-modal-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/vehicleTable.js"></script>
+  <script src="/js/vehicleModal.js"></script>
+  <script src="/js/addVehicleModal.js"></script>
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+    
+    // Initialize vehicle table
+    const vehicleTable = new VehicleTable();
+    
+    // Check for vehicleId query parameter and open modal if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicleId = urlParams.get('vehicleId');
+    if (vehicleId) {
+      // Wait for the table to load, then open the modal
+      setTimeout(() => {
+        if (window.VehicleModal) {
+          const modal = new VehicleModal(vehicleId);
+          modal.open();
+          // Clean URL without reloading
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }, 500);
+    }
+  </script>
+</body>
+</html>
+

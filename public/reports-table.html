@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Vehicle Reports</title>
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/table.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <i data-lucide="truck" style="width: 28px; height: 28px;"></i>
+          Vehicle Management Suite
+        </div>
+        <nav class="nav">
+          <a href="/">Dashboard</a>
+          <a href="/report-form">New Report</a>
+          <a href="/reports-table" class="active">View Reports</a>
+          <a href="/vehicle-management">Vehicles</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 32px 24px;">
+    <h1 style="margin-bottom: 32px;">All Reports</h1>
+
+    <div class="table-container">
+      <div class="table-header">
+        <h2 class="table-title">Inspection Reports</h2>
+        
+        <div class="table-controls">
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon" style="width: 20px; height: 20px;"></i>
+            <input type="text" id="search-input" placeholder="Search reports...">
+          </div>
+
+          <div class="filter-group">
+            <select id="vehicle-filter">
+              <option value="">All Vehicles</option>
+            </select>
+
+            <input type="date" id="date-from-filter" placeholder="From Date">
+            <input type="date" id="date-to-filter" placeholder="To Date">
+
+            <button id="clear-filters-btn" class="btn btn-sm btn-secondary">Clear Filters</button>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <button id="export-all-btn" class="btn btn-sm btn-primary">
+              <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+              Export All (CSV)
+            </button>
+            <a href="/report-form" class="btn btn-sm btn-success">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+              New Report
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk Actions Bar -->
+      <div id="bulk-actions" class="bulk-actions">
+        <div class="bulk-actions-info">
+          <span id="bulk-actions-count">0</span> reports selected
+        </div>
+        <button id="export-selected-btn" class="btn btn-sm btn-primary">Export Selected</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width: 40px;">
+                <input type="checkbox" id="select-all">
+              </th>
+              <th class="sortable" data-sort="id">ID</th>
+              <th class="sortable" data-sort="vehicle_number">Vehicle #</th>
+              <th class="sortable" data-sort="inspection_date">Date</th>
+              <th class="sortable" data-sort="inspector_name">Inspector</th>
+              <th class="sortable hide-mobile" data-sort="mileage">Mileage</th>
+              <th>Status</th>
+              <th style="width: 280px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reports-tbody">
+            <!-- Table rows will be inserted here -->
+          </tbody>
+        </table>
+        
+        <!-- Mobile Card Layout -->
+        <div id="mobile-cards" class="mobile-cards">
+          <!-- Mobile cards will be inserted here -->
+        </div>
+      </div>
+
+      <div class="table-footer">
+        <div class="pagination-info" id="pagination-info">
+          Loading...
+        </div>
+
+        <div class="page-size-selector">
+          <label for="page-size">Show:</label>
+          <select id="page-size">
+            <option value="25" selected>25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+
+        <div class="pagination" id="pagination-controls">
+          <!-- Pagination buttons will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/table.js"></script>
+  <script>
+    // Load vehicles for filter dropdown
+    async function loadVehicleFilter() {
+      try {
+        const vehicles = await api.getVehicles();
+        const select = document.getElementById('vehicle-filter');
+        
+        vehicles.forEach(vehicle => {
+          const option = document.createElement('option');
+          option.value = vehicle.vehicle_number;
+          option.textContent = vehicle.vehicle_number;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Failed to load vehicles:', error);
+      }
+    }
+
+    // Select all checkbox
+    document.getElementById('select-all')?.addEventListener('change', (e) => {
+      const checkboxes = document.querySelectorAll('.report-checkbox');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = e.target.checked;
+        const event = new Event('change');
+        checkbox.dispatchEvent(event);
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadVehicleFilter();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
+

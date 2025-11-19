@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Vehicle Condition Report</title>
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/form.css">
+  <link rel="stylesheet" href="/css/autocomplete.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <i data-lucide="truck" style="width: 28px; height: 28px;"></i>
+          Vehicle Management Suite
+        </div>
+        <nav class="nav">
+          <a href="/">Dashboard</a>
+          <a href="/report-form" class="active">New Report</a>
+          <a href="/reports-table">View Reports</a>
+          <a href="/vehicle-management">Vehicles</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="form-container">
+    <h1>Vehicle Condition Report</h1>
+    <p class="text-gray-600 mb-6">Complete this inspection form for the vehicle.</p>
+
+    <!-- Draft Banner -->
+    <div id="draft-banner" class="draft-banner">
+      <div class="draft-banner-text">
+        <i data-lucide="save" style="width: 20px; height: 20px;"></i>
+        You have a saved draft
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button id="load-draft-btn" class="btn btn-sm btn-primary">Load Draft</button>
+        <button id="discard-draft-btn" class="btn btn-sm btn-secondary">Discard</button>
+      </div>
+    </div>
+
+    <form id="report-form" class="form">
+      <!-- Header Information -->
+      <section class="form-section">
+        <h3 class="form-section-title">Report Information</h3>
+        
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label for="vehicle_number" class="form-label required">Vehicle Number</label>
+            <input type="text" id="vehicle_number" name="vehicle_number" class="form-input" required>
+            <div class="form-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="inspection_date" class="form-label required">Inspection Date</label>
+            <input type="date" id="inspection_date" name="inspection_date" class="form-input" required>
+            <div class="form-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="inspector_name" class="form-label required">Inspector Name</label>
+            <input type="text" id="inspector_name" name="inspector_name" class="form-input" required>
+            <div class="form-error"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vehicle Details -->
+      <section class="form-section">
+        <h3 class="form-section-title">Vehicle Details</h3>
+        
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="make" class="form-label">Make of Vehicle</label>
+            <input type="text" id="make" name="make" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label for="year" class="form-label">Year</label>
+            <input type="number" id="year" name="year" class="form-input" min="1900" max="2100">
+          </div>
+        </div>
+
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="mileage" class="form-label">Mileage</label>
+            <input type="number" id="mileage" name="mileage" class="form-input" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="last_mileage_serviced" class="form-label">Last Mileage Serviced</label>
+            <input type="number" id="last_mileage_serviced" name="last_mileage_serviced" class="form-input" min="0">
+          </div>
+        </div>
+
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="hour_meter" class="form-label">Hour Meter</label>
+            <input type="number" id="hour_meter" name="hour_meter" class="form-input" min="0" step="0.1">
+          </div>
+
+          <div class="form-group">
+            <label for="hours_pto" class="form-label">Hours PTO</label>
+            <input type="number" id="hours_pto" name="hours_pto" class="form-input" min="0" step="0.1">
+          </div>
+        </div>
+      </section>
+
+      <!-- Inspection Checklist -->
+      <section class="form-section">
+        <h3 class="form-section-title">Inspection Checklist</h3>
+        
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="steering_good" name="steering_good">
+            <label for="steering_good">Is Steering Gear in Good Condition?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="brakes_work" name="brakes_work">
+            <label for="brakes_work">Do Brakes Work Properly?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="parking_brake_work" name="parking_brake_work">
+            <label for="parking_brake_work">Does Parking Brake Work Properly?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="headlights_working" name="headlights_working">
+            <label for="headlights_working">Are Both Headlights Working?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="parking_lights_working" name="parking_lights_working">
+            <label for="parking_lights_working">Are Both Parking Lights Working?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="taillights_working" name="taillights_working">
+            <label for="taillights_working">Are Taillights Working?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="backup_lights_working" name="backup_lights_working">
+            <label for="backup_lights_working">Are Both Back-Up Lights Working?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="signal_devices_good" name="signal_devices_good">
+            <label for="signal_devices_good">Are Signal Devices in Good Order?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="auxiliary_lights_working" name="auxiliary_lights_working">
+            <label for="auxiliary_lights_working">Are Auxiliary Lights Working?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="windshield_wiper_working" name="windshield_wiper_working">
+            <label for="windshield_wiper_working">Is Windshield Wiper Working?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="tires_safe" name="tires_safe">
+            <label for="tires_safe">Are All Tires & Treads Safe?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="flags_flares_present" name="flags_flares_present">
+            <label for="flags_flares_present">Are there Flags & Flares?</label>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" id="first_aid_kit_stocked" name="first_aid_kit_stocked">
+            <label for="first_aid_kit_stocked">Is First Aid Kit Fully Stocked and in Good Condition?</label>
+          </div>
+        </div>
+
+        <div class="form-row form-row-2" style="margin-top: 24px;">
+          <div class="form-group">
+            <label for="windshield_condition" class="form-label">Condition of Windshield</label>
+            <input type="text" id="windshield_condition" name="windshield_condition" class="form-input" placeholder="e.g., Good, Cracked, etc.">
+          </div>
+
+          <div class="form-group">
+            <label for="aed_location" class="form-label">Location and Condition of AED</label>
+            <input type="text" id="aed_location" name="aed_location" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fire_extinguisher_condition" class="form-label">Condition of Fire Extinguisher</label>
+          <input type="text" id="fire_extinguisher_condition" name="fire_extinguisher_condition" class="form-input">
+        </div>
+      </section>
+
+      <!-- Tire Pressure -->
+      <section class="form-section">
+        <h3 class="form-section-title">Tire Pressure (PSI)</h3>
+        
+        <div class="tire-grid">
+          <div class="tire-input-group">
+            <label for="tire_pressure_rf">RF (Right Front)</label>
+            <input type="number" id="tire_pressure_rf" name="tire_pressure_rf" class="form-input" min="0" max="200" step="0.5">
+          </div>
+
+          <div class="tire-input-group">
+            <label for="tire_pressure_rr">RR (Right Rear)</label>
+            <input type="number" id="tire_pressure_rr" name="tire_pressure_rr" class="form-input" min="0" max="200" step="0.5">
+          </div>
+
+          <div class="tire-input-group">
+            <label for="tire_pressure_rr_outer">RR (Outer)</label>
+            <input type="number" id="tire_pressure_rr_outer" name="tire_pressure_rr_outer" class="form-input" min="0" max="200" step="0.5">
+          </div>
+
+          <div class="tire-input-group">
+            <label for="tire_pressure_lf">LF (Left Front)</label>
+            <input type="number" id="tire_pressure_lf" name="tire_pressure_lf" class="form-input" min="0" max="200" step="0.5">
+          </div>
+
+          <div class="tire-input-group">
+            <label for="tire_pressure_lr">LR (Left Rear)</label>
+            <input type="number" id="tire_pressure_lr" name="tire_pressure_lr" class="form-input" min="0" max="200" step="0.5">
+          </div>
+
+          <div class="tire-input-group">
+            <label for="tire_pressure_lr_outer">LR (Outer)</label>
+            <input type="number" id="tire_pressure_lr_outer" name="tire_pressure_lr_outer" class="form-input" min="0" max="200" step="0.5">
+          </div>
+        </div>
+      </section>
+
+      <!-- Defects and Signature -->
+      <section class="form-section">
+        <h3 class="form-section-title">Additional Information</h3>
+        
+        <div class="form-group">
+          <label for="defects" class="form-label">Defects</label>
+          <textarea id="defects" name="defects" class="form-textarea" rows="4" placeholder="Describe any defects or issues found during inspection..."></textarea>
+          <div class="form-help">List any problems or concerns that need attention</div>
+        </div>
+
+        <div class="form-group">
+          <label for="signature" class="form-label">Signature</label>
+          <input type="text" id="signature" name="signature" class="form-input" placeholder="Type your name">
+        </div>
+      </section>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <a href="/" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary btn-lg">Submit Report</button>
+      </div>
+    </form>
+
+    <!-- Autosave Indicator -->
+    <div id="autosave-indicator" class="autosave-indicator">
+      <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+      Saving draft...
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/autocomplete.js"></script>
+  <script src="/js/form.js"></script>
+  <script>
+    // Set today's date as default
+    document.getElementById('inspection_date').valueAsDate = new Date();
+    // Initialize Lucide icons
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
+
