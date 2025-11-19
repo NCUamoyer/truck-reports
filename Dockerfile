@@ -3,10 +3,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies
+# Copy package files
 COPY package*.json ./
-# Copy lock file if it exists
 COPY pnpm-lock.yaml* ./
+COPY pnpm-workspace.yaml* ./
 COPY yarn.lock* ./
 
 # Install dependencies based on lock file
@@ -18,10 +18,10 @@ RUN if [ -f pnpm-lock.yaml ]; then \
       npm ci; \
     fi
 
-# Copy source code
+# Copy application source
 COPY . .
 
-# Build application
+# Build application if needed
 # No build script detected, skipping build step
 
 # Production stage
@@ -31,19 +31,36 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Install runtime dependencies (including curl for health checks)
+RUN apk add --no-cache curl
 
-# Copy necessary files
-# We copy everything from builder to ensure all source files (like server/) are present
-COPY --from=builder /app ./
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 appuser
+
+# Copy dependencies from builder
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+
+# Copy application files
+COPY --from=builder /app/server ./server
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.next ./.next
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/data /app/uploads && \
+    chown -R appuser:nodejs /app/data /app/uploads
 
 # Set ownership
-RUN chown -R nextjs:nodejs /app
+RUN chown -R appuser:nodejs /app
 
-USER nextjs
+# Enable pnpm in production
+RUN corepack enable && corepack prepare pnpm@latest --activate
+USER appuser
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
