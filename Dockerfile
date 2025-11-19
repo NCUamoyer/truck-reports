@@ -10,7 +10,13 @@ COPY pnpm-lock.yaml* ./
 COPY yarn.lock* ./
 
 # Install dependencies based on lock file
-RUN if [ -f pnpm-lock.yaml ]; then       corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile;     elif [ -f yarn.lock ]; then       yarn install --frozen-lockfile;     else       npm ci;     fi
+RUN if [ -f pnpm-lock.yaml ]; then \
+      corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile; \
+    elif [ -f yarn.lock ]; then \
+      yarn install --frozen-lockfile; \
+    else \
+      npm ci; \
+    fi
 
 # Copy source code
 COPY . .
@@ -30,12 +36,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-# COPY --from=builder /app/dist ./dist
-# For Next.js, you might need .next instead of dist
-# COPY --from=builder /app/.next ./.next
-# COPY --from=builder /app/public ./public
+# We copy everything from builder to ensure all source files (like server/) are present
+COPY --from=builder /app ./
 
 # Set ownership
 RUN chown -R nextjs:nodejs /app
